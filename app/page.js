@@ -26,7 +26,7 @@ export default function NewsAggregator() {
       id: 'jtbc',
       name: 'JTBC韓国',
       country: '🇰🇷',
-      url: 'https://jtbc.co.kr/',
+      url: 'https://news.jtbc.co.kr/',
       language: 'ko',
       color: 'bg-red-500'
     },
@@ -34,7 +34,7 @@ export default function NewsAggregator() {
       id: 'ifeng',
       name: '鳳凰網香港',
       country: '🇭🇰',
-      url: 'https://www.ifeng.com/',
+      url: 'https://news.ifeng.com/',
       language: 'zh',
       color: 'bg-yellow-500'
     }

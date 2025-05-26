@@ -36,9 +36,9 @@ function categorizeNews(title) {
 
 export async function GET() {
   try {
-    console.log('🇭🇰 鳳凰網香港からニュースを取得中...');
+    console.log('🇭🇰 鳳凰網ニュースページからニュースを取得中...');
     
-    const response = await fetch('https://www.ifeng.com/', {
+    const response = await fetch('https://news.ifeng.com/', {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -51,13 +51,13 @@ export async function GET() {
     }
 
     const html = await response.text();
-    console.log('✅ 鳳凰網からHTMLを正常に取得しました');
+    console.log('✅ 鳳凰網ニュースページからHTMLを正常に取得しました');
     
     const $ = cheerio.load(html);
     const news = [];
     const categories = {};
 
-    // 鳳凰網固有のセレクター
+    // 鳳凰網ニュース固有のセレクター（より具体的に）
     const selectors = [
       '.news_list li',
       '.list_news li',
@@ -65,7 +65,9 @@ export async function GET() {
       '.article_item',
       '.headline',
       '.main_news',
-      '.news_title'
+      '.news_title',
+      '.item_news',
+      '.news_box'
     ];
 
     for (let selector of selectors) {
@@ -82,12 +84,12 @@ export async function GET() {
           // 相対URLを修正
           if (link) {
             if (link.startsWith('/')) {
-              link = `https://www.ifeng.com${link}`;
+              link = `https://news.ifeng.com${link}`;
             } else if (!link.startsWith('http')) {
-              link = `https://www.ifeng.com/${link}`;
+              link = `https://news.ifeng.com/${link}`;
             }
           } else {
-            link = 'https://www.ifeng.com/';
+            link = 'https://news.ifeng.com/';
           }
           
           // 中国語から日本語に翻訳
@@ -133,7 +135,7 @@ export async function GET() {
             !originalTitle.includes('搜索')
         ) {
           if (link.startsWith('/')) {
-            link = `https://www.ifeng.com${link}`;
+            link = `https://news.ifeng.com${link}`;
           }
           
           const category = categorizeNews(originalTitle);

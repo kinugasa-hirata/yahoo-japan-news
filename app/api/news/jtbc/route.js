@@ -36,9 +36,9 @@ function categorizeNews(title) {
 
 export async function GET() {
   try {
-    console.log('🇰🇷 JTBC韓国からニュースを取得中...');
+    console.log('🇰🇷 JTBC韓国ニュースページからニュースを取得中...');
     
-    const response = await fetch('https://jtbc.co.kr/', {
+    const response = await fetch('https://news.jtbc.co.kr/', {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -51,20 +51,22 @@ export async function GET() {
     }
 
     const html = await response.text();
-    console.log('✅ JTBCからHTMLを正常に取得しました');
+    console.log('✅ JTBCニュースページからHTMLを正常に取得しました');
     
     const $ = cheerio.load(html);
     const news = [];
     const categories = {};
 
-    // JTBC固有のセレクター
+    // JTBC News固有のセレクター（より具体的に）
     const selectors = [
       '.news_list li',
-      '.main_news',
+      '.list_item',
       '.news_item',
       '.article_list li',
       '.headline',
-      'article'
+      '.main_news',
+      '.news_title',
+      '.item_box'
     ];
 
     for (let selector of selectors) {
@@ -81,12 +83,12 @@ export async function GET() {
           // 相対URLを修正
           if (link) {
             if (link.startsWith('/')) {
-              link = `https://jtbc.co.kr${link}`;
+              link = `https://news.jtbc.co.kr${link}`;
             } else if (!link.startsWith('http')) {
-              link = `https://jtbc.co.kr/${link}`;
+              link = `https://news.jtbc.co.kr/${link}`;
             }
           } else {
-            link = 'https://jtbc.co.kr/';
+            link = 'https://news.jtbc.co.kr/';
           }
           
           // 韓国語から日本語に翻訳
@@ -132,7 +134,7 @@ export async function GET() {
             !originalTitle.includes('검색')
         ) {
           if (link.startsWith('/')) {
-            link = `https://jtbc.co.kr${link}`;
+            link = `https://news.jtbc.co.kr${link}`;
           }
           
           const category = categorizeNews(originalTitle);
